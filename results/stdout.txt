@@ -1,0 +1,18 @@
+/var/opt/workspaces/vscode/start: line 26: jq: command not found
+***** Please use the script in bin/code-server instead!
+***** This script will soon be removed!
+***** See the release notes at https://github.com/cdr/code-server/releases/tag/v3.4.0
+[2024-04-16T18:04:34.120Z] info  Wrote default config file to ~/.config/code-server/config.yaml
+[2024-04-16T18:04:35.106Z] info  code-server 3.7.3 93fb76e4a71b1959ec2a23481ba2611200d714b2
+[2024-04-16T18:04:35.107Z] info  Using user-data-dir /mnt/vscode-settings
+[2024-04-16T18:04:35.113Z] info  Using config file ~/.config/code-server/config.yaml
+[2024-04-16T18:04:35.113Z] info  HTTP server listening on http://0.0.0.0:8888 
+[2024-04-16T18:04:35.113Z] info    - Authentication is disabled 
+[2024-04-16T18:04:35.113Z] info    - Not serving HTTPS
+[2024-04-16T18:04:41.493Z] error Failed to get latest version [38;2;140;140;140m{"error":"https://api.github.com/repos/cdr/code-server/releases/latest: 403"}[0m
+[2024-04-16T18:10:41.680Z] error Failed to get latest version [38;2;140;140;140m{"error":"https://api.github.com/repos/cdr/code-server/releases/latest: 403"}[0m
+[2024-04-16T18:16:41.799Z] error Failed to get latest version [38;2;140;140;140m{"error":"https://api.github.com/repos/cdr/code-server/releases/latest: 403"}[0m
+[2024-04-17T18:19:30.694Z] error Failed to get latest version [38;2;140;140;140m{"error":"https://api.github.com/repos/cdr/code-server/releases/latest: 403"}[0m
+[2024-04-17T18:25:31.496Z] error Failed to get latest version [38;2;140;140;140m{"error":"https://api.github.com/repos/cdr/code-server/releases/latest: 403"}[0m
+[2024-04-17T18:31:32.443Z] error Failed to get latest version [38;2;140;140;140m{"error":"https://api.github.com/repos/cdr/code-server/releases/latest: 403"}[0m
+[2024-04-17T18:37:33.294Z] error Failed to get latest version [38;2;140;140;140m{"error":"https://api.github.com/repositories/172953845/releases/latest: 403"}[0m
