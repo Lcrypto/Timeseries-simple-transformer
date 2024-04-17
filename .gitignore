@@ -1,0 +1,5 @@
+*__pycache__
+.domino*
+.vscode*
+vscode_settings
+results
