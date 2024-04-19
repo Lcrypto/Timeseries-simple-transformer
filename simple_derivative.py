@@ -1,4 +1,4 @@
-import io, torch
+import torch
 import matplotlib.pyplot as plt
 
 x = torch.linspace(0, 10, 1000, requires_grad = True)
@@ -10,4 +10,4 @@ fig = plt.figure(figsize=(6, 6))
 plt.plot(x.detach().numpy(), y.detach().numpy(), label="f(x)")
 plt.plot(x.detach().numpy(), x.grad.detach().numpy(), label="f'(x)")
 plt.legend()
-fig.savefig("simple_derivative.png")
+fig.savefig("./img/simple_derivative.png")
