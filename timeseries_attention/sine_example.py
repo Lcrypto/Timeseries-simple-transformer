@@ -25,7 +25,7 @@ model = ForcastingModel(seq_len)
 model.train()
 criterion = torch.nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
-dataset = TensorDataset(torch.Tensor(X), torch.Tensor(Y))
+dataset = TensorDataset(torch.Tensor(X).to("cuda"), torch.Tensor(Y).to("cuda"))
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE)
 for epoch in range(EPOCHS):
     for xx, yy in dataloader:
@@ -37,13 +37,13 @@ for epoch in range(EPOCHS):
     print(f"Epoch {epoch+1}/{EPOCHS}: Loss={loss}")
 
 
-# Prediction Loop
+# New Prediction Loop
 FORCAST = 1000
 model.eval()
 for ff in range(FORCAST):
     xx = x[len(x)-seq_len:len(x)]
-    yy = model(torch.Tensor(xx).reshape(1, xx.shape[0]))
-    x = np.concatenate((x, yy.detach().numpy().reshape(1,)))
+    yy = model(torch.Tensor(xx).reshape(1, xx.shape[0]).to("cuda"))
+    x = np.concatenate((x, yy.detach().cpu().numpy().reshape(1,)))
 
 
 # Plot Predictions
