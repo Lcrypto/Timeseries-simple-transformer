@@ -12,25 +12,17 @@ seq_len = 200
 data = list(pd.read_csv("sunspots.csv")["Monthly Mean Total Sunspot Number"])[1000:]
 x = np.array(data[:2000])
 forcast = np.array(data[2000:])
-X = np.array([x[ii:ii+seq_len] for ii in range(0, x.shape[0]-seq_len)])
-Y = np.array([x[ii+seq_len] for ii in range(0, x.shape[0]-seq_len)])
+X = np.array([x[ii:ii+seq_len] for ii in range(0, x.shape[0]-seq_len)]).reshape((-1, seq_len, 1))
+Y = np.array([x[ii+seq_len] for ii in range(0, x.shape[0]-seq_len)]).reshape((-1, 1))
 
 
-# TESTING
-model = ForcastingModel(seq_len).to("cuda")
-dataset = TensorDataset(torch.Tensor(X).to("cuda"), torch.Tensor(Y).to("cuda"))
-xx, yy = dataset[0]
-xx.reshape((1, seq_len, 1))
-xx.shape
-model(xx)
-
-# New Training Loop
-EPOCHS = 100
-BATCH_SIZE = 16
-LEARNING_RATE = 4.12e-6
-model = ForcastingModel(seq_len).to("cuda")
+# Training Loop
+EPOCHS = 3000
+BATCH_SIZE = 1
+LEARNING_RATE = 1e-6
+model = ForcastingModel(seq_len, dim_feedforward=64).to("cuda")
 model.train()
-criterion = torch.nn.MSELoss()
+criterion = torch.nn.HuberLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 dataset = TensorDataset(torch.Tensor(X).to("cuda"), torch.Tensor(Y).to("cuda"))
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE)
@@ -44,15 +36,15 @@ for epoch in range(EPOCHS):
     print(f"Epoch {epoch+1}/{EPOCHS}: Loss={loss}")
 
 
-# New Prediction Loop
+# Prediction Loop
 model.eval()
 for ff in range(len(forcast)):
     xx = x[len(x)-seq_len:len(x)]
-    yy = model(torch.Tensor(xx).reshape(1, xx.shape[0]).to("cuda"))
+    yy = model(torch.Tensor(xx).reshape((1, seq_len, 1)).to("cuda"))
     x = np.concatenate((x, yy.detach().cpu().numpy().reshape(1,)))
 
 
-# Plot New Predictions
+# Plot Predictions
 import matplotlib.pyplot as plt
 fig = plt.figure(figsize=(6, 6))
 plt.plot(range(2000), data[:2000], label="Training")
@@ -62,18 +54,18 @@ plt.legend()
 fig.savefig("./img/sunspots_example.png")
 
 
-# Export Metrics
-from sklearn.metrics import (
-    accuracy_score,
-    precision_score,
-    recall_score,
-    f1_score,
-    roc_auc_score
-)
-pd.DataFrame({
-    "Accuracy": accuracy_score(x[2000:], forcast),
-    "Precision": precision_score(x[2000:], forcast),
-    "Recall": recall_score(x[2000:], forcast),
-    "F1 Score": f1_score(x[2000:], forcast),
-    "ROC-AUC": roc_auc_score(x[2000:], forcast)
-}).to_csv("sunspot_metrics.csv")
+# # Export Metrics
+# from sklearn.metrics import (
+#     accuracy_score,
+#     precision_score,
+#     recall_score,
+#     f1_score,
+#     roc_auc_score
+# )
+# pd.DataFrame({
+#     "Accuracy": accuracy_score(x[2000:], forcast),
+#     "Precision": precision_score(x[2000:], forcast),
+#     "Recall": recall_score(x[2000:], forcast),
+#     "F1 Score": f1_score(x[2000:], forcast),
+#     "ROC-AUC": roc_auc_score(x[2000:], forcast)
+# }).to_csv("sunspot_metrics.csv")
