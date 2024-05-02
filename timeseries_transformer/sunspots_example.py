@@ -17,14 +17,15 @@ Y = np.array([x[ii+seq_len] for ii in range(0, x.shape[0]-seq_len)]).reshape((-1
 
 
 # Training Loop
-EPOCHS = 3000
-BATCH_SIZE = 1
-LEARNING_RATE = 1e-6
-model = ForcastingModel(seq_len, dim_feedforward=64).to("cuda")
+device = "cpu"
+EPOCHS = 80
+BATCH_SIZE = 2
+LEARNING_RATE = 2e-6
+model = ForcastingModel(seq_len, embed_size=8, nhead=2, device=device).to(device)
 model.train()
 criterion = torch.nn.HuberLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
-dataset = TensorDataset(torch.Tensor(X).to("cuda"), torch.Tensor(Y).to("cuda"))
+dataset = TensorDataset(torch.Tensor(X).to(device), torch.Tensor(Y).to(device))
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE)
 for epoch in range(EPOCHS):
     for xx, yy in dataloader:
@@ -40,7 +41,7 @@ for epoch in range(EPOCHS):
 model.eval()
 for ff in range(len(forcast)):
     xx = x[len(x)-seq_len:len(x)]
-    yy = model(torch.Tensor(xx).reshape((1, seq_len, 1)).to("cuda"))
+    yy = model(torch.Tensor(xx).reshape((1, seq_len, 1)).to(device))
     x = np.concatenate((x, yy.detach().cpu().numpy().reshape(1,)))
 
 
