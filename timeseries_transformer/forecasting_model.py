@@ -37,7 +37,8 @@ class ForecastingModel(torch.nn.Module):
             d_model = embed_size,
             nhead = nhead,
             dim_feedforward = dim_feedforward,
-            dropout = dropout
+            dropout = dropout,
+            batch_first = True
         )
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(dropout)
@@ -56,7 +57,7 @@ class ForecastingModel(torch.nn.Module):
         src_mask.to(self.device)
         x = self.input_embedding(x)
         x = self.position_encoder(x)
-        x = self.transformer_encoder(x).reshape((-1, self.seq_len*self.embed_size))
+        x = self.transformer_encoder(x, src_mask=src_mask).reshape((-1, self.seq_len*self.embed_size))
         x = self.linear1(x)
         x = self.relu(x)
         x = self.dropout(x)
