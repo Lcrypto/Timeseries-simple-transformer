@@ -3,8 +3,11 @@ import torch
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from forcasting_model import ForcastingModel
+from forecasting_model import ForecastingModel
+from torch.optim.lr_scheduler import ExponentialLR
 from torch.utils.data import TensorDataset, DataLoader
+from sklearn.metrics import (mean_squared_error,
+                             mean_absolute_error)
 
 
 # Create a dataset
@@ -17,14 +20,15 @@ Y = np.array([x[ii+seq_len] for ii in range(0, x.shape[0]-seq_len)]).reshape((-1
 
 
 # Training Loop
-device = "cpu"
-EPOCHS = 80
-BATCH_SIZE = 2
-LEARNING_RATE = 2e-6
-model = ForcastingModel(seq_len, embed_size=8, nhead=2, device=device).to(device)
+device = "cuda"
+EPOCHS = 30
+BATCH_SIZE = 1
+LEARNING_RATE = 6.6e-6
+model = ForecastingModel(seq_len, embed_size=8, nhead=2, dim_feedforward=1024, dropout=0, device=device).to(device)
 model.train()
 criterion = torch.nn.HuberLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
+optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
+scheduler = ExponentialLR(optimizer, gamma=0.9)
 dataset = TensorDataset(torch.Tensor(X).to(device), torch.Tensor(Y).to(device))
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE)
 for epoch in range(EPOCHS):
@@ -34,6 +38,7 @@ for epoch in range(EPOCHS):
         loss = criterion(out, yy)
         loss.backward()
         optimizer.step()
+    scheduler.step()
     print(f"Epoch {epoch+1}/{EPOCHS}: Loss={loss}")
 
 
@@ -55,18 +60,6 @@ plt.legend()
 fig.savefig("./img/sunspots_example.png")
 
 
-# # Export Metrics
-# from sklearn.metrics import (
-#     accuracy_score,
-#     precision_score,
-#     recall_score,
-#     f1_score,
-#     roc_auc_score
-# )
-# pd.DataFrame({
-#     "Accuracy": accuracy_score(x[2000:], forcast),
-#     "Precision": precision_score(x[2000:], forcast),
-#     "Recall": recall_score(x[2000:], forcast),
-#     "F1 Score": f1_score(x[2000:], forcast),
-#     "ROC-AUC": roc_auc_score(x[2000:], forcast)
-# }).to_csv("sunspot_metrics.csv")
+# Export Metrics
+print(f"MSE: {mean_squared_error(x[2000:], forcast)}")
+print(f"MAE: {mean_absolute_error(x[2000:], forcast)}")

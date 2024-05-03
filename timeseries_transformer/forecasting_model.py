@@ -21,15 +21,15 @@ class PositionalEncoding(nn.Module):
         return self.dropout(x)
 
 # A forcasting model
-class ForcastingModel(torch.nn.Module):
+class ForecastingModel(torch.nn.Module):
     def __init__(self, 
                  seq_len=200,
                  embed_size = 16,
                  nhead = 4,
-                 dim_feedforward = 64,
+                 dim_feedforward = 2048,
                  dropout = 0.1,
                  device = "cuda"):
-        super(ForcastingModel, self).__init__()
+        super(ForecastingModel, self).__init__()
         self.device = device
         self.seq_len = seq_len
         self.embed_size = embed_size
@@ -48,7 +48,9 @@ class ForcastingModel(torch.nn.Module):
         self.linear1 = nn.Linear(seq_len*embed_size, int(dim_feedforward))
         self.linear2 = nn.Linear(int(dim_feedforward), int(dim_feedforward/2))
         self.linear3 = nn.Linear(int(dim_feedforward/2), int(dim_feedforward/4))
-        self.outlayer = nn.Linear(int(dim_feedforward/4), 1)
+        self.linear4 = nn.Linear(int(dim_feedforward/4), int(dim_feedforward/16))
+        self.linear5 = nn.Linear(int(dim_feedforward/16), int(dim_feedforward/64))
+        self.outlayer = nn.Linear(int(dim_feedforward/64), 1)
     def forward(self, x):
         src_mask = self._generate_square_subsequent_mask()
         src_mask.to(self.device)
@@ -62,6 +64,12 @@ class ForcastingModel(torch.nn.Module):
         x = self.relu(x)
         x = self.dropout(x)
         x = self.linear3(x)
+        x = self.relu(x)
+        x = self.dropout(x)
+        x = self.linear4(x)
+        x = self.relu(x)
+        x = self.dropout(x)
+        x = self.linear5(x)
         x = self.relu(x)
         return self.outlayer(x)
     def _generate_square_subsequent_mask(self):

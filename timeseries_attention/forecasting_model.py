@@ -27,9 +27,9 @@ class Attention(torch.nn.Module):
 
 
 # A forcasting model
-class ForcastingModel(torch.nn.Module):
+class ForecastingModel(torch.nn.Module):
     def __init__(self, seq_len=200, ffdim=64):
-        super(ForcastingModel, self).__init__()
+        super(ForecastingModel, self).__init__()
         self.relu = nn.ReLU()
         self.attention = Attention(seq_len)
         self.linear1 = nn.Linear(seq_len, int(ffdim))

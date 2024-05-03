@@ -1,7 +1,7 @@
 ## PyTorch Examples  
  - *DiffEq*: Experimentation with Autograd for Differential Equations  
  - *Timeseries Attention*: Application of Basic Transformer Attention to Timeseries Forcasting  
- - *Timeseries Transformer*: Application of Basic Transformer Encoder to Timeseries Forcasting  
+ - *Timeseries Transformer*: Application of Basic Transformer Encoder Layer to Timeseries Forcasting  
 
 ### Notes:
  - Examples are not currently packaged, cd into a subfolder to run scripts

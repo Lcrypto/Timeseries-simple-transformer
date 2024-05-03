@@ -2,7 +2,7 @@
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
-from forcasting_model import ForcastingModel
+from forecasting_model import ForecastingModel
 from torch.utils.data import TensorDataset, DataLoader
 
 
@@ -26,7 +26,7 @@ Y = np.array([x[ii+seq_len] for ii in range(0, x.shape[0]-seq_len)])
 EPOCHS = 10
 BATCH_SIZE = 2
 LEARNING_RATE = 1e-6
-model = ForcastingModel(seq_len).to("cuda")
+model = ForecastingModel(seq_len).to("cuda")
 model.train()
 criterion = torch.nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)

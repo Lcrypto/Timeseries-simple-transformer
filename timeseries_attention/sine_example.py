@@ -2,7 +2,7 @@
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
-from forcasting_model import ForcastingModel
+from forecasting_model import ForecastingModel
 from torch.utils.data import TensorDataset, DataLoader
 
 # Get a noisy sin wave
@@ -21,7 +21,7 @@ Y = np.array([x[ii+seq_len] for ii in range(0, x.shape[0]-seq_len)])
 EPOCHS = 20
 BATCH_SIZE = 8
 LEARNING_RATE = 4.12e-5
-model = ForcastingModel(seq_len)
+model = ForecastingModel(seq_len)
 model.train()
 criterion = torch.nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
